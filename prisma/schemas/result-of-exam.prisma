@@ -1,0 +1,17 @@
+model ResultOfExam {
+    id        String @id @default(uuid()) @db.VarChar(36)
+    studentId String @map("student_id") @db.VarChar(36)
+    examId    String @map("exam_id") @db.VarChar(36)
+
+    totalScore    Float @map("total_score")
+    totalDuration Int   @default(0) @map("total_duration")
+
+    createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+    updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+    deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+    student Student @relation("StudentResultOfExam", fields: [studentId], references: [id])
+    exam    Exam    @relation("ExamResultOfExam", fields: [examId], references: [id])
+
+    @@map("result_of_exam")
+}

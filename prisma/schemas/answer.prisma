@@ -1,0 +1,16 @@
+model Answer {
+    id         String @id @default(uuid()) @db.VarChar(36)
+    questionId String @map("question_id") @db.VarChar(36)
+
+    content   String  @db.Text
+    idx       Int
+    isCorrect Boolean @default(false)
+
+    createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+    updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+    deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+    question Question @relation("QuestionAnswer", fields: [questionId], references: [id])
+
+    @@map("answers")
+}

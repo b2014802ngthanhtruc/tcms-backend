@@ -1,0 +1,14 @@
+model Document {
+    id      String @id @default(uuid()) @db.VarChar(36)
+    classId String @db.VarChar(36)
+
+    docUrl String @db.Text
+
+    createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+    updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+    deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+    class Class @relation("ClassDocument", fields: [classId], references: [id])
+
+    @@map("documents")
+}

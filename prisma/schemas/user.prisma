@@ -1,0 +1,31 @@
+model User {
+    id String @id @default(uuid()) @db.VarChar(36)
+
+    email        String  @db.VarChar(255)
+    password     String  @db.VarChar(255)
+    isAdmin      Boolean @default(false) @map("is_admin")
+    isSubAdmin   Boolean @default(false) @map("is_sub_admin")
+    isTutor      Boolean @default(false) @map("is_tutor")
+    isUser       Boolean @default(true) @map("is_user")
+    authProvider String  @map("auth_provider") @db.VarChar(255)
+    status       String  @db.VarChar(255)
+
+    verifyCode                 String?   @map("verify_code") @db.VarChar(6)
+    verifyCodeExpiredAt        DateTime? @map("verify_code_expried_at") @db.Timestamptz(3)
+    resetPasswordCode          String?   @map("reset_password_code") @db.VarChar(6)
+    resetPasswordCodeExpiredAt DateTime? @map("reset_password_code_expired_at") @db.Timestamptz(3)
+
+    isVerifiedEmail Boolean   @default(false) @map("is_verified_email")
+    verifiedEmailAt DateTime? @map("verified_email_at") @db.Timestamptz(3)
+
+    createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+    updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+    deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+    fcmDevice     FcmDevice[]    @relation("UserDevice")
+    notifications Notification[] @relation("UserNotification")
+    students      Student[]      @relation("UserStudent")
+    tutor         Tutor[]        @relation("UserTutor")
+
+    @@map("users")
+}

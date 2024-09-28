@@ -1,0 +1,464 @@
+//******** AUTO GENERATED FILE, DO NOT EDIT.  *********
+
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "binary"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Answer {
+  id         String @id @default(uuid()) @db.VarChar(36)
+  questionId String @map("question_id") @db.VarChar(36)
+
+  content   String  @db.Text
+  idx       Int
+  isCorrect Boolean @default(false)
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+  question Question @relation("QuestionAnswer", fields: [questionId], references: [id])
+
+  @@map("answers")
+}
+
+model Class {
+  id        String  @id @default(uuid()) @db.VarChar(36)
+  subjectId String  @unique @map("subject_id") @db.VarChar(36)
+  tutorId   String? @map("tutor_id") @db.VarChar(36)
+
+  subjectName      String   @map("subject_name") @db.VarChar(255)
+  scope            String   @db.VarChar(255)
+  quantityStudent  Int      @default(1) @map("quantity_student")
+  tuitionFee       Float?   @map("tuition_fee")
+  paymentFrequency String   @map("payment_frequency") @db.VarChar(255)
+  request          String   @db.VarChar(255)
+  location         String   @db.VarChar(255)
+  teachingMode     String   @map("teaching_mode") @db.VarChar(255)
+  description      String   @db.Text
+  status           String   @db.VarChar(255)
+  startedAt        DateTime @map("stated_at") @db.Date
+  endedAt          DateTime @map("ended_at") @db.Date
+  totalDays        Int      @default(0) @map("total_days")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  createdBy String?   @db.VarChar(255)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+  subject Subject @relation("SubjectClass", fields: [subjectId], references: [id])
+  tutor   Tutor?  @relation("TutorClass", fields: [tutorId], references: [id])
+
+  studentOfClasses StudentOfClass[] @relation("ClassStudentOfClass")
+  payment          Payment[]        @relation("ClassPayment")
+  schedules        Schedule[]       @relation("ClassSchedule")
+  documents        Document[]       @relation("ClassDocument")
+  exams            Exam[]           @relation("ClassExam")
+
+  @@map("classes")
+}
+
+model Document {
+  id      String @id @default(uuid()) @db.VarChar(36)
+  classId String @db.VarChar(36)
+
+  docUrl String @db.Text
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+  class Class @relation("ClassDocument", fields: [classId], references: [id])
+
+  @@map("documents")
+}
+
+model EducationalQualification {
+  id      String @id @default(uuid()) @db.VarChar(36)
+  tutorId String @unique @map("tutor_id") @db.VarChar(36)
+
+  degree         String @db.VarChar(255)
+  major          String @db.VarChar(255)
+  university     String @db.VarChar(255)
+  startYear      String @map("start_year") @db.VarChar(4)
+  endYear        String @map("end_year") @db.VarChar(4)
+  certificateUrl String @map("certificate_url") @db.Text
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+  tutor Tutor @relation("TutorEducationalQualification", fields: [tutorId], references: [id])
+
+  @@map("educational_quatifications")
+}
+
+model Exam {
+  id      String @id @default(uuid()) @db.VarChar(36)
+  classId String @map("class_id") @db.VarChar(36)
+
+  name          String   @db.VarChar(255)
+  type          String   @db.VarChar(255)
+  startedTime   DateTime @map("stated_time") @db.Timestamptz(3)
+  endedTime     DateTime @map("ended_time") @db.Timestamptz(3)
+  duration      Int      @default(0)
+  totalQuestion Int      @default(0)
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+  class Class @relation("ClassExam", fields: [classId], references: [id])
+
+  resultOfExams   ResultOfExam[]   @relation("ExamResultOfExam")
+  questionOfExams QuestionOfExam[] @relation("ExamQuestionOfExam")
+
+  @@map("exams")
+}
+
+model FcmDevice {
+  id     String @id @default(uuid()) @db.VarChar(36)
+  userId String @map("user_id") @db.VarChar(36)
+
+  type   String @db.VarChar(1)
+  device String @db.VarChar(2)
+  token  String @db.Text
+  meid   String @db.Text
+  portal String @db.VarChar(255)
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+  user User @relation("UserDevice", fields: [userId], references: [id])
+
+  @@map("fcm_devices")
+}
+
+model JobReference {
+  id      String @id @default(uuid()) @db.VarChar(36)
+  tutorId String @map("tutor_id") @db.VarChar(36)
+
+  grade       String  @db.VarChar(255)
+  class       String  @db.VarChar(255)
+  description String? @db.Text
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+  tutor Tutor @relation("TutorJobReference", fields: [tutorId], references: [id])
+
+  subjectExpects SubjectExpect[] @relation("JobReferenceSubjectExpect", map: "subject_expects")
+
+  @@map("job_references")
+}
+
+model LogUser {
+  id     String @id @default(uuid()) @db.VarChar(36)
+  userId String @map("user_id") @db.VarChar(36)
+
+  action   String @db.VarChar(255)
+  content  String @db.Text
+  actionBy String @map("action_by") @db.Text
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+  @@map("log_users")
+}
+
+model Notification {
+  id     String @id @default(uuid()) @db.VarChar(36)
+  userId String @db.VarChar(36)
+
+  title    String  @db.VarChar(255)
+  content  String  @db.Text
+  metadata Json
+  isRead   Boolean @default(false)
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+  user User @relation("UserNotification", fields: [userId], references: [id])
+
+  @@map("notifications")
+}
+
+model Payment {
+  id        String @id @default(uuid()) @db.VarChar(36)
+  studentId String @map("student_id") @db.VarChar(36)
+  classId   String @map("class_id") @db.VarChar(36)
+
+  paymentInterntId String? @map("payment_internt_id") @db.VarChar(255)
+  amount           Float
+  paymentMethod    String  @map("payment_method") @db.VarChar(255)
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+  student Student @relation("StudentPayment", fields: [studentId], references: [id])
+  class   Class   @relation("ClassPayment", fields: [classId], references: [id])
+
+  @@map("payments")
+}
+
+model QuestionOfExam {
+  id         String @id @default(uuid()) @db.VarChar(36)
+  examId     String @map("exam_id") @db.VarChar(36)
+  questionId String @map("question_id") @db.VarChar(36)
+
+  idx            Int
+  score          Float
+  scorePerAnswer Float? @map("score_per_answer")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+  exam     Exam     @relation("ExamQuestionOfExam", fields: [examId], references: [id])
+  question Question @relation("QuestionQuestionOfExam", fields: [questionId], references: [id])
+
+  studentAnswers StudentAnswer[] @relation("StudentAnswerExamQuestion")
+
+  @@map("question_of_exam")
+}
+
+model Question {
+  id        String  @id @default(uuid()) @db.VarChar(36)
+  subjectId String? @map("subject_id") @db.VarChar(36)
+
+  content String @db.Text
+  type    String @db.VarChar(255)
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+  subject Subject? @relation("SubjectQuestion", fields: [subjectId], references: [id])
+
+  answers         Answer[]         @relation("QuestionAnswer")
+  questionOfExams QuestionOfExam[] @relation("QuestionQuestionOfExam")
+
+  @@map("questions")
+}
+
+model ResultOfExam {
+  id        String @id @default(uuid()) @db.VarChar(36)
+  studentId String @map("student_id") @db.VarChar(36)
+  examId    String @map("exam_id") @db.VarChar(36)
+
+  totalScore    Float @map("total_score")
+  totalDuration Int   @default(0) @map("total_duration")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+  student Student @relation("StudentResultOfExam", fields: [studentId], references: [id])
+  exam    Exam    @relation("ExamResultOfExam", fields: [examId], references: [id])
+
+  @@map("result_of_exam")
+}
+
+model Schedule {
+  id      String @id @default(uuid()) @db.VarChar(36)
+  classId String @map("class_id") @db.VarChar(36)
+
+  time     String @db.VarChar(36)
+  duration Int    @default(0)
+  dow      String @db.VarChar(255)
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+  class Class @relation("ClassSchedule", fields: [classId], references: [id])
+
+  @@map("schedules")
+}
+
+model StudentAnswer {
+  id             String @id @default(uuid()) @db.VarChar(36)
+  examQuestionId String @map("exam_question_id") @db.VarChar(36)
+  studentId      String @map("student_id") @db.VarChar(36)
+
+  answerIds  String[] @map("answer_ids")
+  answerText String   @map("answer_text") @db.Text
+  score      Float?
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+  examQuestion QuestionOfExam @relation("StudentAnswerExamQuestion", fields: [examQuestionId], references: [id])
+  student      Student        @relation("StudentStudentAnswer", fields: [studentId], references: [id])
+
+  @@map("student_answers")
+}
+
+model StudentOfClass {
+  id        String @id @default(uuid()) @db.VarChar(36)
+  studentId String @map("student_id") @db.VarChar(36)
+  classId   String @map("class_id") @db.VarChar(36)
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+  student Student @relation("StudentStudentOfClass", fields: [studentId], references: [id])
+  class   Class   @relation("ClassStudentOfClass", fields: [classId], references: [id])
+
+  @@map("student_of_class")
+}
+
+model Student {
+  id     String @id @default(uuid()) @db.VarChar(36)
+  userId String @map("user_id") @db.VarChar(36)
+
+  firstName   String   @map("first_name") @db.VarChar(255)
+  lastName    String   @map("last_name") @db.VarChar(255)
+  phone       String   @db.VarChar(255)
+  address     String   @db.VarChar(255)
+  avatar      String?  @db.Text
+  parentName  String?  @map("parent_name") @db.VarChar(255)
+  dob         DateTime @db.Date
+  grade       String   @db.VarChar(255)
+  class       String   @db.VarChar(255)
+  description String?  @db.Text
+  status      String   @db.VarChar(255)
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+  user User @relation("UserStudent", fields: [userId], references: [id])
+
+  studentOfClasses StudentOfClass[] @relation("StudentStudentOfClass")
+  payments         Payment[]        @relation("StudentPayment")
+  studentAnswers   StudentAnswer[]  @relation("StudentStudentAnswer")
+  resultOfExams    ResultOfExam[]   @relation("StudentResultOfExam")
+
+  @@map("students")
+}
+
+model SubjectExpect {
+  id             String @id @default(uuid()) @db.VarChar(36)
+  jobReferenceId String @map("job_reference_id") @db.VarChar(36)
+  subjectId      String @map("subject_id") @db.VarChar(36)
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+  jobReference JobReference @relation("JobReferenceSubjectExpect", fields: [jobReferenceId], references: [id], map: "job_reference")
+  subject      Subject      @relation("SubjectSubjectExpect", fields: [subjectId], references: [id])
+
+  @@map("subject_expects")
+}
+
+model Subject {
+  id String @id @default(uuid()) @db.VarChar(36)
+
+  name        String  @db.VarChar(255)
+  description String? @db.Text
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+  class Class? @relation("SubjectClass")
+
+  subjectExpect SubjectExpect[] @relation("SubjectSubjectExpect", map: "subject_expects")
+  questions     Question[]      @relation("SubjectQuestion")
+
+  @@map("subjects")
+}
+
+model TimeExpect {
+  id      String @id @default(uuid()) @db.VarChar(36)
+  tutorId String @map("tutor_id") @db.VarChar(36)
+
+  time String @db.VarChar(255)
+  dow  String @db.VarChar(255)
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+  tutor Tutor @relation("TutorTimeExpect", fields: [tutorId], references: [id])
+
+  @@map("time_expects")
+}
+
+model Tutor {
+  id     String @id @default(uuid()) @db.VarChar(36)
+  userId String @unique @map("user_id") @db.VarChar(36)
+
+  firstName String   @map("first_name") @db.VarChar(255)
+  lastName  String   @map("last_name") @db.VarChar(255)
+  phone     String   @db.VarChar(255)
+  avatar    String?  @db.Text
+  dob       DateTime @db.Date
+  address   String   @db.VarChar(255)
+
+  identificationImageFront String @map("identification_image_front") @db.Text
+  identificationImageBack  String @map("identifitcation_image_back") @db.Text
+  expectSalary             Float
+
+  description String? @db.Text
+  status      String  @db.VarChar(255)
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+  user                     User                      @relation("UserTutor", fields: [userId], references: [id])
+  educationalQualification EducationalQualification? @relation("TutorEducationalQualification", map: "educational_qualification")
+
+  jobReferences JobReference[] @relation("TutorJobReference", map: "job_references")
+  timeExpects   TimeExpect[]   @relation("TutorTimeExpect", map: "time_expects")
+  classes       Class[]        @relation("TutorClass")
+
+  @@map("tutors")
+}
+
+model User {
+  id String @id @default(uuid()) @db.VarChar(36)
+
+  email        String  @db.VarChar(255)
+  password     String  @db.VarChar(255)
+  isAdmin      Boolean @default(false) @map("is_admin")
+  isSubAdmin   Boolean @default(false) @map("is_sub_admin")
+  isTutor      Boolean @default(false) @map("is_tutor")
+  isUser       Boolean @default(true) @map("is_user")
+  authProvider String  @map("auth_provider") @db.VarChar(255)
+  status       String  @db.VarChar(255)
+
+  verifyCode                 String?   @map("verify_code") @db.VarChar(6)
+  verifyCodeExpiredAt        DateTime? @map("verify_code_expried_at") @db.Timestamptz(3)
+  resetPasswordCode          String?   @map("reset_password_code") @db.VarChar(6)
+  resetPasswordCodeExpiredAt DateTime? @map("reset_password_code_expired_at") @db.Timestamptz(3)
+
+  isVerifiedEmail Boolean   @default(false) @map("is_verified_email")
+  verifiedEmailAt DateTime? @map("verified_email_at") @db.Timestamptz(3)
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+  fcmDevice     FcmDevice[]    @relation("UserDevice")
+  notifications Notification[] @relation("UserNotification")
+  students      Student[]      @relation("UserStudent")
+  tutor         Tutor[]        @relation("UserTutor")
+
+  @@map("users")
+}

@@ -1,0 +1,19 @@
+model EducationalQualification {
+    id      String @id @default(uuid()) @db.VarChar(36)
+    tutorId String @unique @map("tutor_id") @db.VarChar(36)
+
+    degree         String @db.VarChar(255)
+    major          String @db.VarChar(255)
+    university     String @db.VarChar(255)
+    startYear      String @map("start_year") @db.VarChar(4)
+    endYear        String @map("end_year") @db.VarChar(4)
+    certificateUrl String @map("certificate_url") @db.Text
+
+    createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+    updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+    deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+    tutor Tutor @relation("TutorEducationalQualification", fields: [tutorId], references: [id])
+
+    @@map("educational_quatifications")
+}

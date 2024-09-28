@@ -1,0 +1,18 @@
+model JobReference {
+    id      String @id @default(uuid()) @db.VarChar(36)
+    tutorId String @map("tutor_id") @db.VarChar(36)
+
+    grade       String  @db.VarChar(255)
+    class       String  @db.VarChar(255)
+    description String? @db.Text
+
+    createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+    updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+    deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+    tutor Tutor @relation("TutorJobReference", fields: [tutorId], references: [id])
+
+    subjectExpects SubjectExpect[] @relation("JobReferenceSubjectExpect", map: "subject_expects")
+
+    @@map("job_references")
+}

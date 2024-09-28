@@ -1,0 +1,18 @@
+model Payment {
+    id        String @id @default(uuid()) @db.VarChar(36)
+    studentId String @map("student_id") @db.VarChar(36)
+    classId   String @map("class_id") @db.VarChar(36)
+
+    paymentInterntId String? @map("payment_internt_id") @db.VarChar(255)
+    amount           Float
+    paymentMethod    String  @map("payment_method") @db.VarChar(255)
+
+    createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+    updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+    deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+    student Student @relation("StudentPayment", fields: [studentId], references: [id])
+    class   Class   @relation("ClassPayment", fields: [classId], references: [id])
+
+    @@map("payments")
+}

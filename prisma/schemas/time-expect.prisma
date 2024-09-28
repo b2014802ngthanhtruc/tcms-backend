@@ -1,0 +1,15 @@
+model TimeExpect {
+    id      String @id @default(uuid()) @db.VarChar(36)
+    tutorId String @map("tutor_id") @db.VarChar(36)
+
+    time String @db.VarChar(255)
+    dow  String @db.VarChar(255)
+
+    createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+    updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+    deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+    tutor Tutor @relation("TutorTimeExpect", fields: [tutorId], references: [id])
+
+    @@map("time_expects")
+}

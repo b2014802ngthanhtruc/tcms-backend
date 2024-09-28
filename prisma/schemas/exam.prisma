@@ -1,0 +1,22 @@
+model Exam {
+    id      String @id @default(uuid()) @db.VarChar(36)
+    classId String @map("class_id") @db.VarChar(36)
+
+    name          String   @db.VarChar(255)
+    type          String   @db.VarChar(255)
+    startedTime   DateTime @map("stated_time") @db.Timestamptz(3)
+    endedTime     DateTime @map("ended_time") @db.Timestamptz(3)
+    duration      Int      @default(0)
+    totalQuestion Int      @default(0)
+
+    createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+    updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+    deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+    class Class @relation("ClassExam", fields: [classId], references: [id])
+
+    resultOfExams   ResultOfExam[]   @relation("ExamResultOfExam")
+    questionOfExams QuestionOfExam[] @relation("ExamQuestionOfExam")
+
+    @@map("exams")
+}
