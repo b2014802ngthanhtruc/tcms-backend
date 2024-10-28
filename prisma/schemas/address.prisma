@@ -1,0 +1,19 @@
+model Address {
+    id          String @id @default(uuid()) @db.VarChar(36)
+    lng         Float?
+    lat         Float?
+    fullAddress String @map("full_address") @db.VarChar(255)
+    address     String @db.VarChar(255)
+    ward        String @db.VarChar(255)
+    district    String @db.VarChar(255)
+    city        String @db.VarChar(255)
+    country     String @db.VarChar(255)
+
+    createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+    updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+    deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+    class   Class?   @relation("ClassAddress")
+    tutor   Tutor?   @relation("TutorAddress")
+    student Student? @relation("StudentAddress")
+}

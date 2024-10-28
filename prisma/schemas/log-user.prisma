@@ -7,7 +7,7 @@ model LogUser {
     actionBy String @map("action_by") @db.Text
 
     createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
-    updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+    updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
     deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
 
     @@map("log_users")

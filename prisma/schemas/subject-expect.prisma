@@ -4,7 +4,7 @@ model SubjectExpect {
     subjectId      String @map("subject_id") @db.VarChar(36)
 
     createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
-    updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+    updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
     deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
 
     jobReference JobReference @relation("JobReferenceSubjectExpect", fields: [jobReferenceId], references: [id], map: "job_reference")

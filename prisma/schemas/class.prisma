@@ -1,17 +1,18 @@
 model Class {
     id        String  @id @default(uuid()) @db.VarChar(36)
-    subjectId String  @unique @map("subject_id") @db.VarChar(36)
+    subjectId String  @map("subject_id") @db.VarChar(36)
     tutorId   String? @map("tutor_id") @db.VarChar(36)
+    addressId String? @unique @map("address_id") @db.VarChar(36)
 
-    subjectName      String   @map("subject_name") @db.VarChar(255)
+    className        String   @map("class_name") @db.VarChar(255)
+    level            String   @default("") @db.VarChar(255)
     scope            String   @db.VarChar(255)
-    quantityStudent  Int      @default(1) @map("quantity_student")
+    quantityStudents Int      @default(1) @map("quantity_student")
     tuitionFee       Float?   @map("tuition_fee")
     paymentFrequency String   @map("payment_frequency") @db.VarChar(255)
     request          String   @db.VarChar(255)
-    location         String   @db.VarChar(255)
     teachingMode     String   @map("teaching_mode") @db.VarChar(255)
-    description      String   @db.Text
+    description      String?  @db.Text
     status           String   @db.VarChar(255)
     startedAt        DateTime @map("stated_at") @db.Date
     endedAt          DateTime @map("ended_at") @db.Date
@@ -19,11 +20,12 @@ model Class {
 
     createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
     createdBy String?   @db.VarChar(255)
-    updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+    updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
     deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
 
-    subject Subject @relation("SubjectClass", fields: [subjectId], references: [id])
-    tutor   Tutor?  @relation("TutorClass", fields: [tutorId], references: [id])
+    subject  Subject  @relation("SubjectClass", fields: [subjectId], references: [id])
+    location Address? @relation("ClassAddress", fields: [addressId], references: [id])
+    tutor    Tutor?   @relation("TutorClass", fields: [tutorId], references: [id])
 
     studentOfClasses StudentOfClass[] @relation("ClassStudentOfClass")
     payment          Payment[]        @relation("ClassPayment")

@@ -5,9 +5,9 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-
 import { HttpAdapterHost } from '@nestjs/core';
-import { ResponseService } from '@shared/response/response.service';
+import { ApiErrorResponse } from '@shared/response/dtos';
+import { ResponseMessageCode } from '@shared/response/enums';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -24,7 +24,16 @@ export class AllExceptionsFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    const response = ResponseService.errorResponse(exception);
+    const response = this._errorResponse(exception);
     httpAdapter.reply(res, { ...response, path: req?.url ?? null }, status);
+  }
+
+  private _errorResponse(exception: any): ApiErrorResponse {
+    return {
+      message: exception?.response?.message ?? exception?.message,
+      messageCode: exception?.response?.code ?? ResponseMessageCode.FAILED,
+      error: exception?.response?.error ?? exception?.name,
+      errors: exception?.response?.errors ?? null,
+    };
   }
 }

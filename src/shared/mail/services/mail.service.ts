@@ -7,7 +7,7 @@ export class MailService {
 
   async sendEmailToAccount(
     email: string,
-    url: string,
+    code: string,
     title: string,
     template: string,
   ) {
@@ -17,9 +17,11 @@ export class MailService {
         subject: title,
         template: template,
         context: {
-          url,
+          code,
+          email,
         },
       });
+      console.log('Success');
       return {
         message: 'Email was sent successfully',
       };

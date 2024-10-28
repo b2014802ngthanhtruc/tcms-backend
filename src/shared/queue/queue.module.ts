@@ -1,9 +1,12 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Global, Module } from '@nestjs/common';
 
+import { AuthConsumer } from './consumers';
+import { AuthModule } from '@modules/auth/auth.module';
 import { BullModule } from '@nestjs/bull';
 import { CONFIG_VAR } from '@config/config.constant';
 import { MINUTES_PER_HOUR } from '@common/constants';
+import { QUEUE_NAMES } from './constants';
 import { QueueService } from './queue.service';
 
 @Global()
@@ -25,9 +28,9 @@ import { QueueService } from './queue.service';
       },
     }),
 
-    // BullModule.registerQueue({
-    //   name: QUEUE_NAMES.AUTH_QUEUE, // assign from queue name in file index folder constants
-    // }),
+    BullModule.registerQueue({
+      name: QUEUE_NAMES.AUTH_QUEUE, // assign from queue name in file index folder constants
+    }),
     // BullModule.registerQueue({
     //   name: QUEUE_NAMES.OWNER_QUEUE, // assign from queue name in file index folder constants
     // }),
@@ -41,13 +44,13 @@ import { QueueService } from './queue.service';
     //   name: QUEUE_NAMES.DOCTOR_QUEUE, // assign from queue name in file index folder constants
     // }),
     // //
-    // AuthModule,
+    AuthModule,
     // OwnerModule,
     // NurseModule,
     // DoctorModule,
     // PatientModule,
   ],
-  providers: [QueueService],
+  providers: [QueueService, AuthConsumer],
   exports: [QueueService],
 })
 export class QueueModule {}

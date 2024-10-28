@@ -1,5 +1,5 @@
-import { Filter } from "@common/dtos";
-import { Request } from "express";
+import { Request } from 'express';
+import { Filter } from '@common/dtos';
 
 export class ApiPaginateResponseInput<T> {
   count!: number;

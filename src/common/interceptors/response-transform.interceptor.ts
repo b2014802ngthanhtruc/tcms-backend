@@ -1,11 +1,11 @@
-import { map } from "rxjs/operators";
+import { map } from 'rxjs/operators';
 import {
   CallHandler,
   ExecutionContext,
   HttpStatus,
   Injectable,
   NestInterceptor,
-} from "@nestjs/common";
+} from '@nestjs/common';
 
 @Injectable()
 export class ResponseTransformInterceptor implements NestInterceptor {
@@ -18,7 +18,7 @@ export class ResponseTransformInterceptor implements NestInterceptor {
 
         // otherwise, return it as success response with data as object property
         return data;
-      })
+      }),
     );
   }
 }

@@ -1,12 +1,4 @@
-import {
-  FilterOperationType,
-  FilterOrder,
-  GeneratedFindOptions,
-  IFilter,
-  IGeneratedFilter,
-  ISingleFilter,
-  ISingleOrder,
-} from "@chax-at/prisma-filter";
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsDefined,
@@ -18,10 +10,16 @@ import {
   Max,
   Min,
   ValidateNested,
-} from "class-validator";
-
-import { Type } from "class-transformer";
-import { createZodDto } from "@anatine/zod-nestjs";
+} from 'class-validator';
+import {
+  FilterOperationType,
+  FilterOrder,
+  GeneratedFindOptions,
+  IFilter,
+  IGeneratedFilter,
+  ISingleFilter,
+  ISingleOrder,
+} from '@chax-at/prisma-filter';
 
 export class SingleFilter<T> implements ISingleFilter<T> {
   @IsString()
@@ -38,7 +36,7 @@ export class SingleFilterOrder<T> implements ISingleOrder<T> {
   @IsString()
   field!: keyof T & string;
 
-  @IsIn(["asc", "desc"])
+  @IsIn(['asc', 'desc'])
   dir!: FilterOrder;
 }
 

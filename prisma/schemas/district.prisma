@@ -1,0 +1,10 @@
+model District {
+    id     String @id @default(uuid()) @db.VarChar(36)
+    cityId String @map("city_id") @db.VarChar(36)
+
+    name String @db.VarChar(255)
+
+    city City @relation("CityDistrict", fields: [cityId], references: [id])
+
+    wards Ward[] @relation("DistrictWard")
+}
